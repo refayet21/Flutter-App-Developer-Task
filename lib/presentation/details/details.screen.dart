@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'controllers/details.controller.dart';
-
 class DetailsScreen extends StatelessWidget {
   DetailsScreen({super.key});
   final DetailsController controller = Get.put(DetailsController());
@@ -10,50 +10,108 @@ class DetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(controller.meme.name),
+        title: Text(
+          controller.meme.name,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0), 
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Image.network(
-                controller.meme.url,
-                height: 200, 
-                fit: BoxFit.cover, 
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20.r),
+                      child: Image.network(
+                        controller.meme.url,
+                        width: double.infinity,
+                        height: 400.h,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.r),
+                      child: CircleAvatar(
+                        radius: 25.r,
+                        backgroundColor: Colors.black54,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: 24.sp,
+                          ),
+                          onPressed: () {
+                            controller.cropAndSaveImage(context);
+                          },
+                          tooltip: 'Edit Image',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Width: ${controller.meme.width.toString()} ',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Height: ${controller.meme.height}',
-              style: TextStyle(fontSize: 20, color: Colors.green),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Box Count: ${controller.meme.boxCount.toString()} ',
-              style: TextStyle(fontSize: 14),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Captions: ${controller.meme.captions} ',
-              style: TextStyle(fontSize: 16, color: Colors.yellow.shade900),
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  controller.cropAndSaveImage(context); // Pass context here
-                },
-                child: Text('Crop and Save Image'),
+              SizedBox(height: 20.h), 
+              
+              // Additional meme details section
+              Text(
+                'Details:',
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: 10.h),
+              Row(
+                children: [
+                  Icon(Icons.straighten, color: Colors.grey, size: 20.sp),
+                  SizedBox(width: 8.w),
+                  Text(
+                    'Width: ${controller.meme.width} px',
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.h),
+              Row(
+                children: [
+                  Icon(Icons.height, color: Colors.grey, size: 20.sp),
+                  SizedBox(width: 8.w),
+                  Text(
+                    'Height: ${controller.meme.height} px',
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.h),
+              Row(
+                children: [
+                  Icon(Icons.view_comfy, color: Colors.grey, size: 20.sp),
+                  SizedBox(width: 8.w),
+                  Text(
+                    'Box Count: ${controller.meme.boxCount}',
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 10.h),
+              Row(
+                children: [
+                  Icon(Icons.text_fields, color: Colors.grey, size: 20.sp),
+                  SizedBox(width: 8.w),
+                  Text(
+                    'Captions: ${controller.meme.captions}',
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
