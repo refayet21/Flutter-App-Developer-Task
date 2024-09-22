@@ -1,0 +1,1 @@
+export 'package:popularmemes/infrastructure/navigation/bindings/controllers/home.controller.binding.dart'; 
