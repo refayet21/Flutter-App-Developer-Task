@@ -1,23 +1,52 @@
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:popularmemes/model/meme.dart';
+
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
+  
+  var memeList = <Meme>[].obs;
+  var searchMemes = <Meme>[].obs;
+  var isLoading = true.obs;
+  var errorMessage = ''.obs;
+  
 
-  final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
+    fetchMemes();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  Future<void> fetchMemes() async {
+    try {
+      isLoading(true);
+      final response =
+          await http.get(Uri.parse('https://api.imgflip.com/get_memes'));
+
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        var memes = jsonResponse['data']['memes'] as List;
+        memeList.value = memes.map((json) => Meme.fromJson(json)).toList();
+        searchMemes.value = memeList; 
+      } else {
+        errorMessage('Failed to load memes');
+      }
+    } catch (e) {
+      errorMessage('Error: $e');
+    } finally {
+      isLoading(false);
+    }
   }
 
-  @override
-  void onClose() {
-    super.onClose();
+  void searchMeme(String query) {
+    if (query.isEmpty) {
+      searchMemes.value = memeList; 
+    } else {
+      searchMemes.value = memeList
+          .where(
+              (meme) => meme.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
   }
-
-  void increment() => count.value++;
 }
